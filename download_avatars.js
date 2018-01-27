@@ -8,7 +8,7 @@ const repoName = process.argv[3];
 
 console.log('Welcome to the GitHub Avatar Downloader!');
 
-function getRepoContributors(repoOwner, repoName, callback) {
+const getRepoContributors = function (repoOwner, repoName, callback) {
   const options = {
     url: `https://api.github.com/repos/${repoOwner}/${repoName}/contributors`,
     headers: {
@@ -27,28 +27,25 @@ function getRepoContributors(repoOwner, repoName, callback) {
 
     response.forEach(function(contribObj) {
       var avatarUrl = contribObj.avatar_url;
-      var filePath = `./avatars/${contribObj.login}.jpg`;    // dummy value
+      var filePath = `./avatars/${contribObj.login}.jpg`;
       callback(avatarUrl, filePath);
     })
   });
 }
 
-function downloadImageByURL(url, filePath) {
+const downloadImageByURL = function (url, filePath) {
   request.get(url)
-    .on('error', function (err) {                                   // Note 2
+    .on('error', function (err) {
       throw err;
     })
-    .on('response', function (response) {                           // Note 3
+    .on('response', function (response) {
       console.log('Response Status Code: ', response.statusCode);
     })
     .pipe(fs.createWriteStream(filePath))
 }
 
-// getRepoContributors("jquery", "jquery", downloadImageByURL)//function(err, result) {
-//   console.log("Errors:", err);
-//   // console.log("Result:", result);
-//   result.forEach(function(key) {
-//     console.log(key.avatar_url);
-//   })
-// });
-// downloadImageByURL('https://avatars2.githubusercontent.com/u/2741?v=3&s=466', 'avatars/kvirani.jpg');
+if (!repoOwner || !repoName) {
+  console.log("Error!! Please check your repository owner and/or repository name.");
+} else {
+  getRepoContributors(repoOwner, repoName, downloadImageByURL);
+}
