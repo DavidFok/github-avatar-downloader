@@ -18,12 +18,7 @@ const getRepoContributors = function (repoOwner, repoName, callback) {
   };
 
   request(options, function(err, res, body) {
-    if (err) {
-      // 1) do something errory
-      // 2) don't let anything else happen
-    }
     const response = JSON.parse(body);
-
 
     response.forEach(function(contribObj) {
       var avatarUrl = contribObj.avatar_url;
